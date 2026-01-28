@@ -5,6 +5,8 @@ import 'arguments.dart';
 import 'exceptions.dart';
 
 class CommandRunner {
+  Future<void> Function(Object)? onError;
+
   CommandRunner({this.onError});
 
   final Map<String, Command> _commands = <String, Command>{};
@@ -12,7 +14,7 @@ class CommandRunner {
   UnmodifiableSetView<Command> get commands => 
     UnmodifiableSetView<Command>(<Command>{..._commands.values});
 
-  Future<void> Function(Object)? onError;
+
   
   Future<void> run(List<String> input) async {
     try {
