@@ -1,6 +1,66 @@
+import 'dart:async';
+
 import 'package:command_runner/command_runner.dart';
 
-void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
+class PrettyEcho extends Command {
+  PrettyEcho() {
+    addFlag(
+      'blue-only',
+      abbr: 'b',
+      help: 'When true, the echoed text will all be blue.',
+    );
+  }
+
+
+  @override
+  String get name => 'echo';
+
+  @override
+  bool get requiresArgument => true;
+
+  @override
+  String get description => 'Print input, but colorful.';
+
+  @override
+  String? get help =>
+      'echos a String provided as an argument with ANSI coloring,';
+
+  @override
+  String? get valueHelp => 'STRING';
+
+
+  @override
+  FutureOr<String> run(ArgResults arg) {
+    if (arg.commandArg == null) {
+      throw ArgumentException(
+        'This argument requires one positional argument',
+        name,
+      );
+    }
+
+    List<String> prettyWrods = [];
+    var words = arg.commandArg!.split(' ');
+    for (var i = 0; i < words.length; i++) {
+      var word = words[i];
+      switch (i % 3) {
+        case 0:
+          prettyWrods.add(word.titleText);
+
+        case 1:
+          prettyWrods.add(word.instructionText);
+        
+        case 2:
+          prettyWrods.add(word.errorText);
+
+      }
+    }
+
+    return prettyWrods.join(' ');
+
+  }
+}
+
+void main(List<String> arguments) {
+  final runner = CommandRunner()..addCommand(PrettyEcho());
+  runner.run(arguments);
 }

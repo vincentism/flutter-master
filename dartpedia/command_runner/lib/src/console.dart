@@ -49,9 +49,45 @@ enum ConsoleColor {
     return '$ansiEscapeLiteral[38;2;$r;$g;${b}m$text$reset';
   }
 
- String applyBackground(String text) {
+  String applyBackground(String text) {
     return '$ansiEscapeLiteral[48;2;$r;$g;${b}m$text$ansiEscapeLiteral[0m';
   }
 
-
 }
+
+
+extension TextRenderUtils on String {
+  String get errorText => ConsoleColor.red.applyForeground(this);
+  String get instructionText => ConsoleColor.yellow.applyForeground(this);
+  String get titleText => ConsoleColor.lightBlue.applyForeground(this);
+
+  List<String> splitLinesByLength(int length) {
+    final List<String> words = split(' ');
+    final List<String> output = <String>[];
+    final StringBuffer strBuffer = StringBuffer();
+
+    for (int i = 0; i < words.length; i++) {
+      final String word = words[i];
+      if (strBuffer.length + word.length <= length) {
+        strBuffer.write(word.trim());
+        if (strBuffer.length + 1 <= length) {
+          strBuffer.write(' ');
+
+        }
+
+      }
+
+      if (i + 1 < words.length &&
+        words[i + 1].length + strBuffer.length + 1 > length
+      ) {
+        output.add(strBuffer.toString().trim());
+        strBuffer.clear();
+      }
+    }
+
+    output.add(strBuffer.toString().trim());
+    return output;
+  }
+}
+
+

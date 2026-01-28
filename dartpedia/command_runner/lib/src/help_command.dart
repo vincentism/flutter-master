@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:ffi';
-import 'arguments.dart';
+import 'package:command_runner/command_runner.dart';
+import 'console.dart';
+import 'exceptions.dart';
 
 class HelpCommand extends Command {
   HelpCommand() {
@@ -27,11 +28,11 @@ class HelpCommand extends Command {
 
   @override
   FutureOr<Object?> run(ArgResults args) async {
-    var usage = runner.usage;
-    for (var command in runner.commands) {
-      usage += '\n${command.usage}';
-    }
+    final buffer = StringBuffer();
+    buffer.writeln(runner.usage.titleText);
+    if (args.flag('verbose')) {
+      
 
-    return usage;
+    }
   }
 }
